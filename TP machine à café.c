@@ -1,5 +1,5 @@
 const char* boissons[3] = {"cafe", "the", "chocolat"};
-int stock[3] = {1, 1, 1};  // Chaque boisson commence avec un stock de 10
+int stock[3] = {10, 10, 10};  // Chaque boisson commence avec un stock de 10
 
 const int leds[3] = {11, 12, 13};
 const int boutons[3] = {2, 3, 4};
@@ -19,10 +19,12 @@ void setup() {
 }
 
 void loop() {
+  	delay(2000);
+
     for (int i = 0; i < 3; i++) {
      	checkLumiere(i);  // Vérifie la lumière avant de servir une boisson
         if (digitalRead(boutons[i]) == LOW) {  // Bouton appuyé
-            remplir(stock, i);  // Remplir le stock pour la boisson correspondante
+            remplir( i);  // Remplir le stock pour la boisson correspondante
             delay(100);  // Délai pour éviter des doubles lectures
           	checkLumiere(i);
 
@@ -30,17 +32,19 @@ void loop() {
     }
     
     Serial.println("Choisir entre chocolat chaud, the ou cafe");
-    receptionCommande();
-  	delay(1000);
+  	if (Serial.available() > 0) {
+    receptionCommande();  // Appel de la fonction lorsque des données sont disponibles
+	}
+  	delay(10);
   
 }
   
 
-void remplir(int* stock, int type_boisson) {
+void remplir(int type_boisson) {
     stock[type_boisson] = 10;  // Remplir la boisson à 10
     Serial.print("Stock de ");
     Serial.print(boissons[type_boisson]);
-    Serial.println(" rempli à 10.");
+    Serial.println(" rempli a 10.");
 }
 
 void receptionCommande() {
